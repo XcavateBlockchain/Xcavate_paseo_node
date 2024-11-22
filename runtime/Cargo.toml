@@ -87,6 +87,7 @@ parachains-common = { workspace = true }
 
 # Custom
 pallet-xcavate-whitelist = { workspace = true }
+pallet-nft-marketplace = { workspace = true }
 
 [dev-dependencies]
 sp-io = { workspace = true }
@@ -137,6 +138,7 @@ std = [
 	"pallet-nfts/std",
 	"pallet-nft-fractionalization/std",
 	"pallet-xcavate-whitelist/std",
+	"pallet-nft-marketplace/std",
 	"pallet-xcm/std",
 	"parachain-info/std",
 	"parachains-common/std",
@@ -232,6 +234,7 @@ try-runtime = [
 	"pallet-nfts/try-runtime",
 	"pallet-nft-fractionalization/try-runtime",
 	"pallet-xcavate-whitelist/try-runtime",
+	"pallet-nft-marketplace/try-runtime",
 	"pallet-xcm/try-runtime",
 	"parachain-info/try-runtime",
 	"polkadot-runtime-common/try-runtime",

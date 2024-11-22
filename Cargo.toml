@@ -130,7 +130,10 @@ parachain-info = { package = "staging-parachain-info", git = "https://github.com
 parachains-common = { git = "https://github.com/paritytech/polkadot-sdk", default-features = false, tag = "polkadot-v1.10.0" }
 
 # Custom
-pallet-xcavate-whitelist      = { path = "pallets/xcavate-whitelist", default-features = false }
+pallet-xcavate-whitelist = { path = "pallets/xcavate-whitelist", default-features = false }
+pallet-nft-marketplace = { path = "pallets/nft-marketplace", default-features = false }
+pallet-property-management = { path = "pallets/property-management", default-features = false }
+pallet-property-governance = { path = "pallets/property-governance", default-features = false }
 
 # Fuzzer
 substrate-runtime-fuzzer = { git = "https://github.com/srlabs/substrate-runtime-fuzzer.git", default-features = false }

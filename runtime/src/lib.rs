@@ -155,6 +155,7 @@ construct_runtime!(
 
         // Custom
         XcavateWhitelist: pallet_xcavate_whitelist = 50,
+        NftMarketplace: pallet_nft_marketplace = 51,
     }
 );
 

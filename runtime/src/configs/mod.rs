@@ -692,3 +692,31 @@ impl pallet_xcavate_whitelist::Config for Runtime {
 	type WhitelistOrigin = EitherOfDiverse<EnsureRoot<AccountId>, Treasurer>;
 	type MaxUsersInWhitelist = MaxWhitelistUsers;
 }
+
+parameter_types! {
+	pub const CommunityProjectPalletId: PalletId = PalletId(*b"py/cmprj");
+	pub const NftMarketplacePalletId: PalletId = PalletId(*b"py/nftxc");
+	pub const MaxNftTokens: u32 = 250;
+	pub const Postcode: u32 = 10;
+}
+
+/// Configure the pallet-nft-marketplace in pallets/nft-marketplace.
+impl pallet_nft_marketplace::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_nft_marketplace::weights::SubstrateWeight<Runtime>;
+	type Currency = Balances;
+	type PalletId = NftMarketplacePalletId;
+	type MaxNftToken = MaxNftTokens;
+	type LocationOrigin = EnsureRoot<Self::AccountId>;
+	#[cfg(feature = "runtime-benchmarks")]
+	type Helper = pallet_nft_marketplace::NftHelper;
+	type CollectionId = u32;
+	type ItemId = u32;
+	type TreasuryId = TreasuryPalletId;
+	type CommunityProjectsId = CommunityProjectPalletId;
+	type FractionalizeCollectionId = <Self as pallet_nfts::Config>::CollectionId;
+	type FractionalizeItemId = <Self as pallet_nfts::Config>::ItemId;
+	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type AssetId2 = u32;
+	type PostcodeLimit = Postcode;
+}
