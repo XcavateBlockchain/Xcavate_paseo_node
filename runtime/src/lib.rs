@@ -148,6 +148,13 @@ construct_runtime!(
         PolkadotXcm: pallet_xcm = 31,
         CumulusXcm: cumulus_pallet_xcm = 32,
         MessageQueue: pallet_message_queue = 33,
+
+        // Others
+        Nfts: pallet_nfts = 40,
+        NftFractionalization: pallet_nft_fractionalization = 41,
+
+        // Custom
+        XcavateWhitelist: pallet_xcavate_whitelist = 50,
     }
 );
 
