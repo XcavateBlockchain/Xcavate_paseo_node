@@ -19,9 +19,7 @@ use frame_support::{
 	PalletId,
 };
 
-use pallet_assets::Instance1;
-
-use codec::Codec;
+use parity_scale_codec::Codec;
 
 pub type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
 
@@ -124,7 +122,7 @@ pub mod pallet {
 		frame_system::Config
 		+ pallet_nft_marketplace::Config
 		+ pallet_property_management::Config
-		+ pallet_assets::Config<Instance1>
+		+ pallet_assets::Config
 	{
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
 		type RuntimeEvent: From<Event<Self>> + IsType<<Self as frame_system::Config>::RuntimeEvent>;
@@ -158,7 +156,7 @@ pub mod pallet {
 
 		#[cfg(feature = "runtime-benchmarks")]
 		type Helper: crate::BenchmarkHelper<
-			<Self as pallet_assets::Config<Instance1>>::AssetId,
+			<Self as pallet_assets::Config>::AssetId,
 			Self,
 		>;
 
@@ -173,7 +171,7 @@ pub mod pallet {
 		type PalletId: Get<PalletId>;
 
 		/// Asset id type from pallet assets.
-		type AssetId: IsType<<Self as pallet_assets::Config<Instance1>>::AssetId>
+		type AssetId: IsType<<Self as pallet_assets::Config>::AssetId>
 			+ Parameter
 			+ From<u32>
 			+ Ord

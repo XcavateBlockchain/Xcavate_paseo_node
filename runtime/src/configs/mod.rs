@@ -30,7 +30,7 @@ use scale_info::TypeInfo;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_runtime::{
     traits::{AccountIdLookup, BlakeTwo256, IdentityLookup, Verify},
-    Perbill, Permill, RuntimeDebug, MultiSignature,
+    Perbill, Permill, RuntimeDebug, MultiSignature, Percent,
 };
 use sp_version::RuntimeVersion;
 use xcm::latest::{
@@ -719,4 +719,66 @@ impl pallet_nft_marketplace::Config for Runtime {
 	type AssetId = <Self as pallet_assets::Config>::AssetId;
 	type AssetId2 = u32;
 	type PostcodeLimit = Postcode;
+}
+
+parameter_types! {
+	pub const MinimumStakingAmount: Balance = 100 * DOLLARS;
+	pub const PropertyManagementPalletId: PalletId = PalletId(*b"py/ppmmt");
+	pub const MaxProperty: u32 = 1000;
+	pub const MaxLettingAgent: u32 = 100;
+	pub const MaxLocation: u32 = 100;
+	pub const PropertyReserves: Balance = 1000 * DOLLARS;
+	pub const PolkadotJsMultiply: Balance = 1 * CENTS;
+}
+
+/// Configure the pallet-property-management in pallets/property-management.
+impl pallet_property_management::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_property_management::weights::SubstrateWeight<Runtime>;
+	type Currency = Balances;
+	type PalletId = PropertyManagementPalletId;
+	#[cfg(feature = "runtime-benchmarks")]
+	type Helper = pallet_property_management::AssetHelper;
+	type AgentOrigin = EnsureRoot<Self::AccountId>;
+	type LettingAgentDeposit = MinimumStakingAmount;
+	type MaxProperties = MaxProperty;
+	type MaxLettingAgents = MaxLettingAgent;
+	type MaxLocations = MaxLocation;
+	type GovernanceId = PropertyGovernancePalletId;
+	type PropertyReserve = PropertyReserves;
+	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type PolkadotJsMultiplier = PolkadotJsMultiply;
+}
+
+parameter_types! {
+	pub const PropertyVotingTime: BlockNumber = 20;
+	pub const MaxVoteForBlock: u32 = 100;
+	pub const MinimumSlashingAmount: Balance = 10 * DOLLARS;
+	pub const MaximumVoter: u32 = 100;
+	pub const VotingThreshold: Percent = Percent::from_percent(51);
+	pub const HighVotingThreshold: Percent = Percent::from_percent(67);
+	pub const LowProposal: Balance = 500 * CENTS;
+	pub const HighProposal: Balance = 10_000 * CENTS;
+	pub const PropertyGovernancePalletId: PalletId = PalletId(*b"py/gvrnc");
+}
+
+/// Configure the pallet-property-governance in pallets/property-governance.
+impl pallet_property_governance::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type WeightInfo = pallet_property_governance::weights::SubstrateWeight<Runtime>;
+	type Currency = Balances;
+	type VotingTime = PropertyVotingTime;
+	type MaxVotesForBlock = MaxVoteForBlock;
+	type Slash = ();
+	type MinSlashingAmount = MinimumSlashingAmount;
+	type MaxVoter = MaximumVoter;
+	type Threshold = VotingThreshold;
+	type HighThreshold = HighVotingThreshold;
+	#[cfg(feature = "runtime-benchmarks")]
+	type Helper = pallet_property_governance::AssetHelper;
+	type LowProposal = LowProposal;
+	type HighProposal = HighProposal;
+	type PalletId = PropertyGovernancePalletId;
+	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type PolkadotJsMultiplier = PolkadotJsMultiply;
 }

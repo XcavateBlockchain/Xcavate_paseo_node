@@ -156,6 +156,8 @@ construct_runtime!(
         // Custom
         XcavateWhitelist: pallet_xcavate_whitelist = 50,
         NftMarketplace: pallet_nft_marketplace = 51,
+        PropertyManagement: pallet_property_management = 52,
+		PropertyGovernance: pallet_property_governance = 53,
     }
 );
 

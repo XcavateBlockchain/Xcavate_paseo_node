@@ -3815,6 +3815,8 @@ dependencies = [
  "pallet-nft-marketplace",
  "pallet-nfts",
  "pallet-preimage",
+ "pallet-property-governance",
+ "pallet-property-management",
  "pallet-proxy",
  "pallet-referenda",
  "pallet-scheduler",
@@ -7027,6 +7029,51 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-std 14.0.0 (git+https://github.com/paritytech/polkadot-sdk?tag=polkadot-v1.10.0)",
+]
+
+[[package]]
+name = "pallet-property-governance"
+version = "4.0.0-dev"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "pallet-assets",
+ "pallet-balances",
+ "pallet-nft-fractionalization",
+ "pallet-nft-marketplace",
+ "pallet-nfts",
+ "pallet-property-management",
+ "pallet-xcavate-whitelist",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+]
+
+[[package]]
+name = "pallet-property-management"
+version = "4.0.0-dev"
+dependencies = [
+ "frame-benchmarking",
+ "frame-support",
+ "frame-system",
+ "pallet-assets",
+ "pallet-balances",
+ "pallet-nft-fractionalization",
+ "pallet-nft-marketplace",
+ "pallet-nfts",
+ "pallet-xcavate-whitelist",
+ "parity-scale-codec",
+ "scale-info",
+ "serde",
+ "sp-api",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
 ]
 
 [[package]]
