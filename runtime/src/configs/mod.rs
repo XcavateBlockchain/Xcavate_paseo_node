@@ -12,7 +12,7 @@ use frame_support::{
     parameter_types,
     traits::{
         AsEnsureOriginWithArg, ConstU32, ConstU64, Contains, EitherOfDiverse, InstanceFilter,
-        TransformOrigin,
+        TransformOrigin, WithdrawReasons,
     },
     weights::{ConstantMultiplier, Weight},
     PalletId, BoundedVec,
@@ -29,7 +29,7 @@ use polkadot_runtime_common::{BlockHashCount, SlowAdjustingFeeUpdate};
 use scale_info::TypeInfo;
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 use sp_runtime::{
-    traits::{AccountIdLookup, BlakeTwo256, IdentityLookup, Verify},
+    traits::{AccountIdLookup, BlakeTwo256, IdentityLookup, Verify, ConvertInto},
     Perbill, Permill, RuntimeDebug, MultiSignature, Percent,
 };
 use sp_version::RuntimeVersion;
@@ -681,6 +681,23 @@ impl pallet_nft_fractionalization::Config for Runtime {
 	type BenchmarkHelper = ();
 	type RuntimeHoldReason = RuntimeHoldReason;
 }
+
+parameter_types! {
+	pub const MinVestedTransfer: u64 = 256 * 2;
+	pub UnvestedFundsAllowedWithdrawReasons: WithdrawReasons =
+		WithdrawReasons::except(WithdrawReasons::TRANSFER | WithdrawReasons::RESERVE);
+}
+
+impl pallet_vesting::Config for Runtime {
+	type BlockNumberToBalance = ConvertInto;
+	type Currency = Balances;
+	type RuntimeEvent = RuntimeEvent;
+	const MAX_VESTING_SCHEDULES: u32 = 10;
+	type MinVestedTransfer = MinVestedTransfer;
+	type WeightInfo = ();
+	type UnvestedFundsAllowedWithdrawReasons = UnvestedFundsAllowedWithdrawReasons;
+	type BlockNumberProvider = System;
+} 
 
 parameter_types! {
 	pub const MaxWhitelistUsers: u32 = 1000;

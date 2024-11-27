@@ -152,6 +152,7 @@ construct_runtime!(
         // Others
         Nfts: pallet_nfts = 40,
         NftFractionalization: pallet_nft_fractionalization = 41,
+        Vesting: pallet_vesting = 42,
 
         // Custom
         XcavateWhitelist: pallet_xcavate_whitelist = 50,

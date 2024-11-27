@@ -46,6 +46,7 @@ pallet-utility = { workspace = true }
 pallet-whitelist = { workspace = true }
 pallet-nfts = { workspace = true }
 pallet-nft-fractionalization = { workspace = true }
+pallet-vesting = { workspace = true }
 sp-api = { workspace = true }
 sp-arithmetic = { workspace = true }
 sp-block-builder = { workspace = true }
@@ -139,6 +140,7 @@ std = [
 	"pallet-whitelist/std",
 	"pallet-nfts/std",
 	"pallet-nft-fractionalization/std",
+	"pallet-vesting/std",
 	"pallet-xcavate-whitelist/std",
 	"pallet-nft-marketplace/std",
 	"pallet-property-management/std",
@@ -197,6 +199,7 @@ runtime-benchmarks = [
 	"pallet-whitelist/runtime-benchmarks",
 	"pallet-nfts/runtime-benchmarks",
 	"pallet-nft-fractionalization/runtime-benchmarks",
+	"pallet-vesting/runtime-benchmarks",
 	"pallet-xcm/runtime-benchmarks",
 	"parachains-common/runtime-benchmarks",
 	"polkadot-parachain-primitives/runtime-benchmarks",
@@ -237,6 +240,7 @@ try-runtime = [
 	"pallet-whitelist/try-runtime",
 	"pallet-nfts/try-runtime",
 	"pallet-nft-fractionalization/try-runtime",
+	"pallet-vesting/try-runtime",
 	"pallet-xcavate-whitelist/try-runtime",
 	"pallet-nft-marketplace/try-runtime",
 	"pallet-property-management/try-runtime",
