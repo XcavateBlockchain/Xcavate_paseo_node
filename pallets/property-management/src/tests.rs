@@ -354,8 +354,8 @@ fn set_letting_agent_works() {
 			[4; 32].into()
 		)));
 		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([2; 32].into()), 0));
-		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([3; 32].into()), 2));
-		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([4; 32].into()), 3));
+		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([3; 32].into()), 1));
+		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([4; 32].into()), 2));
 		assert_ok!(NftMarketplace::list_object(
 			RuntimeOrigin::signed([0; 32].into()),
 			0,
@@ -365,11 +365,11 @@ fn set_letting_agent_works() {
 			bvec![22, 22]
 		));
 		assert_ok!(NftMarketplace::buy_token(RuntimeOrigin::signed([1; 32].into()), 3, 100));
-		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([2; 32].into()), 4));
+		assert_ok!(PropertyManagement::set_letting_agent(RuntimeOrigin::signed([2; 32].into()), 3));
 		assert_eq!(LettingStorage::<Test>::get(0).unwrap(), [2; 32].into());
-		assert_eq!(LettingStorage::<Test>::get(2).unwrap(), [3; 32].into());
-		assert_eq!(LettingStorage::<Test>::get(3).unwrap(), [4; 32].into());
-		assert_eq!(LettingStorage::<Test>::get(4).unwrap(), [2; 32].into());
+		assert_eq!(LettingStorage::<Test>::get(1).unwrap(), [3; 32].into());
+		assert_eq!(LettingStorage::<Test>::get(2).unwrap(), [4; 32].into());
+		assert_eq!(LettingStorage::<Test>::get(3).unwrap(), [2; 32].into());
 		assert_eq!(
 			LettingAgentLocations::<Test>::get::<u32, BoundedVec<u8, Postcode>>(
 				0,
@@ -438,7 +438,7 @@ fn set_letting_agent_fails() {
 			PropertyManagement::set_letting_agent(RuntimeOrigin::signed([0; 32].into()), 0),
 			Error::<Test>::LettingAgentAlreadySet
 		);
-		for x in 2..101 {
+		for x in 1..100 {
 			assert_ok!(NftMarketplace::list_object(
 				RuntimeOrigin::signed([0; 32].into()),
 				0,
@@ -447,17 +447,17 @@ fn set_letting_agent_fails() {
 				100,
 				bvec![22, 22]
 			));
-			assert_ok!(XcavateWhitelist::add_to_whitelist(RuntimeOrigin::root(), [(x); 32].into()));
+			assert_ok!(XcavateWhitelist::add_to_whitelist(RuntimeOrigin::root(), [(x + 1); 32].into()));
 			Balances::make_free_balance_be(&[x; 32].into(), 100_000);
-			assert_ok!(Assets::mint(
+			assert_ok!(ForeignAssets::mint(
 				RuntimeOrigin::signed([0; 32].into()),
 				1.into(),
-				sp_runtime::MultiAddress::Id([x; 32].into()),
+				sp_runtime::MultiAddress::Id([(x + 1); 32].into()),
 				1_000_000,
 			));
 			assert_ok!(NftMarketplace::buy_token(
-				RuntimeOrigin::signed([x; 32].into()),
-				(x as u32 - 1).into(),
+				RuntimeOrigin::signed([(x + 1); 32].into()),
+				(x as u32).into(),
 				100
 			));
 			assert_ok!(PropertyManagement::set_letting_agent(
@@ -475,7 +475,7 @@ fn set_letting_agent_fails() {
 		));
 		assert_ok!(NftMarketplace::buy_token(RuntimeOrigin::signed([1; 32].into()), 100, 100));
 		assert_noop!(
-			PropertyManagement::set_letting_agent(RuntimeOrigin::signed([0; 32].into()), 101),
+			PropertyManagement::set_letting_agent(RuntimeOrigin::signed([0; 32].into()), 100),
 			Error::<Test>::TooManyAssignedProperties
 		);
 	});
@@ -725,7 +725,7 @@ fn withdraw_funds_fails() {
 			0,
 			true,
 		));
-		assert_eq!(Assets::total_supply(0), 1000);
+		assert_eq!(LocalAssets::total_supply(0), 1000);
 		assert_ok!(PropertyManagement::add_letting_agent(
 			RuntimeOrigin::root(),
 			0,

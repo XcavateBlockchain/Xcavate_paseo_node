@@ -1,7 +1,7 @@
 use super::*;
 
 use crate as pallet_property_management;
-use frame_support::{parameter_types, traits::AsEnsureOriginWithArg, BoundedVec};
+use frame_support::{parameter_types, traits::AsEnsureOriginWithArg, BoundedVec, derive_impl};
 use sp_core::ConstU32;
 use sp_runtime::{
 	traits::{AccountIdLookup, BlakeTwo256, IdentifyAccount, Verify},
@@ -14,7 +14,7 @@ use sp_runtime::BuildStorage;
 
 use pallet_nfts::PalletFeatures;
 
-use pallet_assets::Instance1;
+use pallet_assets::{Instance1, Instance2};
 
 pub type Block = frame_system::mocking::MockBlock<Test>;
 
@@ -46,7 +46,8 @@ frame_support::construct_runtime!(
 		NftFractionalization: pallet_nft_fractionalization,
 		NftMarketplace: pallet_nft_marketplace,
 		Balances: pallet_balances::{Pallet, Call, Storage, Config<T>, Event<T>},
-		Assets: pallet_assets::<Instance1>,
+		LocalAssets: pallet_assets::<Instance1>,
+		ForeignAssets: pallet_assets::<Instance2>,
 		XcavateWhitelist: pallet_xcavate_whitelist,
 	}
 );
@@ -55,6 +56,7 @@ parameter_types! {
 	pub const BlockHashCount: BlockNumber = 2400;
 }
 
+#[derive_impl(frame_system::config_preludes::ParaChainDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Test {
 	type RuntimeCall = RuntimeCall;
 	type Nonce = u32;
@@ -95,8 +97,6 @@ impl pallet_balances::Config for Test {
 	type RuntimeHoldReason = RuntimeHoldReason;
 	type RuntimeFreezeReason = RuntimeFreezeReason;
 	type FreezeIdentifier = ();
-	// Holds are used with COLLATOR_LOCK_ID and DELEGATOR_LOCK_ID
-	type MaxHolds = ConstU32<2>;
 	type MaxFreezes = ConstU32<0>;
 }
 
@@ -145,7 +145,28 @@ impl pallet_assets::Config<Instance1> for Test {
 	type RuntimeEvent = RuntimeEvent;
 	type Balance = u32;
 	type AssetId = u32;
-	type AssetIdParameter = codec::Compact<u32>;
+	type AssetIdParameter = parity_scale_codec::Compact<u32>;
+	type Currency = Balances;
+	type CreateOrigin = AsEnsureOriginWithArg<frame_system::EnsureSigned<Self::AccountId>>;
+	type ForceOrigin = EnsureRoot<AccountId>;
+	type AssetDeposit = ConstU32<1>;
+	type AssetAccountDeposit = ConstU32<1>;
+	type MetadataDepositBase = ConstU32<1>;
+	type MetadataDepositPerByte = ConstU32<1>;
+	type ApprovalDeposit = ConstU32<1>;
+	type StringLimit = ConstU32<50>;
+	type Freezer = ();
+	type Extra = ();
+	type CallbackHandle = ();
+	type WeightInfo = ();
+	type RemoveItemsLimit = ConstU32<1000>;
+}
+
+impl pallet_assets::Config<Instance2> for Test {
+	type RuntimeEvent = RuntimeEvent;
+	type Balance = u32;
+	type AssetId = u32;
+	type AssetIdParameter = parity_scale_codec::Compact<u32>;
 	type Currency = Balances;
 	type CreateOrigin = AsEnsureOriginWithArg<frame_system::EnsureSigned<Self::AccountId>>;
 	type ForceOrigin = EnsureRoot<AccountId>;
@@ -178,7 +199,7 @@ impl pallet_nft_fractionalization::Config for Test {
 	type NftId = <Self as pallet_nfts::Config>::ItemId;
 	type AssetBalance = <Self as pallet_balances::Config>::Balance;
 	type AssetId = <Self as pallet_assets::Config<Instance1>>::AssetId;
-	type Assets = Assets;
+	type Assets = LocalAssets;
 	type Nfts = Uniques;
 	type PalletId = NftFractionalizationPalletId;
 	type WeightInfo = ();
@@ -222,6 +243,7 @@ impl pallet_nft_marketplace::Config for Test {
 	type FractionalizeItemId = <Self as pallet_nfts::Config>::ItemId;
 	type AssetId = <Self as pallet_assets::Config<Instance1>>::AssetId;
 	type AssetId2 = u32;
+	type AssetId3 = u32;
 	type PostcodeLimit = Postcode;
 }
 
@@ -270,7 +292,7 @@ pub fn new_test_ext() -> sp_io::TestExternalities {
 	.assimilate_storage(&mut test)
 	.unwrap();
 
- 	pallet_assets::GenesisConfig::<Test, Instance1> {
+ 	pallet_assets::GenesisConfig::<Test, Instance2> {
 		assets: vec![(1, /* account("buyer", SEED, SEED) */ [0; 32].into(), true, 1)], // Genesis assets: id, owner, is_sufficient, min_balance
 		metadata: vec![(1, "XUSD".into(), "XUSD".into(), 0)], // Genesis metadata: id, name, symbol, decimals
 		accounts: vec![

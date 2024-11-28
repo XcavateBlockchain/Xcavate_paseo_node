@@ -1,5 +1,5 @@
 use crate as pallet_whitelist;
-use frame_support::{parameter_types, traits::ConstU64};
+use frame_support::{parameter_types, traits::ConstU64, derive_impl};
 use sp_runtime::{
 	traits::{BlakeTwo256, IdentityLookup},
 	BuildStorage,
@@ -16,6 +16,7 @@ frame_support::construct_runtime!(
 	}
 );
 
+#[derive_impl(frame_system::config_preludes::ParaChainDefaultConfig as frame_system::DefaultConfig)]
 impl frame_system::Config for Test {
 	type RuntimeCall = RuntimeCall;
 	type Nonce = u32;
