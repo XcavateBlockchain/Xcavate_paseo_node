@@ -56,7 +56,7 @@ use crate::{
         PriceForSiblingParachainDelivery, TreasuryPaymaster,
     },
     weights::{self, BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight},
-    Aura, Assets, Balances, CollatorSelection, MessageQueue, OriginCaller, PalletInfo, ParachainSystem,
+    Aura, LocalAssets, Balances, CollatorSelection, MessageQueue, OriginCaller, PalletInfo, ParachainSystem,
     Preimage, Runtime, RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason,
     RuntimeOrigin, RuntimeTask, Session, SessionKeys, System, Treasury, WeightToFee, XcmpQueue, Nfts,
 };
@@ -323,7 +323,32 @@ parameter_types! {
     pub const RemoveItemsLimit: u32 = 1000;
 }
 
-impl pallet_assets::Config for Runtime {
+type LocalAssetInstance = pallet_assets::Instance1;
+impl pallet_assets::Config<LocalAssetInstance> for Runtime {
+    type ApprovalDeposit = ApprovalDeposit;
+    type AssetAccountDeposit = AssetAccountDeposit;
+    type AssetDeposit = AssetDeposit;
+    type AssetId = u32;
+    type AssetIdParameter = parity_scale_codec::Compact<u32>;
+    type Balance = Balance;
+    #[cfg(feature = "runtime-benchmarks")]
+    type BenchmarkHelper = ();
+    type CallbackHandle = ();
+    type CreateOrigin = AsEnsureOriginWithArg<EnsureSigned<AccountId>>;
+    type Currency = Balances;
+    type Extra = ();
+    type ForceOrigin = EnsureRoot<AccountId>;
+    type Freezer = ();
+    type MetadataDepositBase = MetadataDepositBase;
+    type MetadataDepositPerByte = MetadataDepositPerByte;
+    type RemoveItemsLimit = RemoveItemsLimit;
+    type RuntimeEvent = RuntimeEvent;
+    type StringLimit = StringLimit;
+    /// Rerun benchmarks if you are making changes to runtime configuration.
+    type WeightInfo = weights::pallet_assets::WeightInfo<Runtime>;
+}
+
+impl pallet_assets::Config<pallet_assets::Instance2> for Runtime {
     type ApprovalDeposit = ApprovalDeposit;
     type AssetAccountDeposit = AssetAccountDeposit;
     type AssetDeposit = AssetDeposit;
@@ -671,8 +696,8 @@ impl pallet_nft_fractionalization::Config for Runtime {
 	type NftCollectionId = <Self as pallet_nfts::Config>::CollectionId;
 	type NftId = <Self as pallet_nfts::Config>::ItemId;
 	type AssetBalance = <Self as pallet_balances::Config>::Balance;
-	type AssetId = <Self as pallet_assets::Config>::AssetId;
-	type Assets = Assets;
+	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
+	type Assets = LocalAssets;
 	type Nfts = Nfts;
 	type PalletId = NftFractionalizationPalletId;
 	type WeightInfo = ();
@@ -680,7 +705,7 @@ impl pallet_nft_fractionalization::Config for Runtime {
 	#[cfg(feature = "runtime-benchmarks")]
 	type BenchmarkHelper = ();
 	type RuntimeHoldReason = RuntimeHoldReason;
-}
+}  
 
 parameter_types! {
 	pub const MinVestedTransfer: u64 = 256 * 2;
@@ -733,8 +758,9 @@ impl pallet_nft_marketplace::Config for Runtime {
 	type CommunityProjectsId = CommunityProjectPalletId;
 	type FractionalizeCollectionId = <Self as pallet_nfts::Config>::CollectionId;
 	type FractionalizeItemId = <Self as pallet_nfts::Config>::ItemId;
-	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
 	type AssetId2 = u32;
+	type AssetId3 = u32;
 	type PostcodeLimit = Postcode;
 }
 
@@ -763,7 +789,7 @@ impl pallet_property_management::Config for Runtime {
 	type MaxLocations = MaxLocation;
 	type GovernanceId = PropertyGovernancePalletId;
 	type PropertyReserve = PropertyReserves;
-	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
 	type PolkadotJsMultiplier = PolkadotJsMultiply;
 }
 
@@ -796,6 +822,6 @@ impl pallet_property_governance::Config for Runtime {
 	type LowProposal = LowProposal;
 	type HighProposal = HighProposal;
 	type PalletId = PropertyGovernancePalletId;
-	type AssetId = <Self as pallet_assets::Config>::AssetId;
+	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
 	type PolkadotJsMultiplier = PolkadotJsMultiply;
-}
+} 

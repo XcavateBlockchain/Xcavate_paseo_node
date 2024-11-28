@@ -126,8 +126,9 @@ construct_runtime!(
         // Monetary
         Balances: pallet_balances = 10,
         TransactionPayment: pallet_transaction_payment = 11,
-        Assets: pallet_assets = 12,
-        Treasury: pallet_treasury::{Pallet, Call, Storage, Config<T>, Event<T>} = 13,
+        LocalAssets: pallet_assets::<Instance1> = 12,
+        ForeignAssets: pallet_assets::<Instance2> = 13,
+        Treasury: pallet_treasury::{Pallet, Call, Storage, Config<T>, Event<T>} = 14,
 
         // Governance
         Sudo: pallet_sudo = 15,

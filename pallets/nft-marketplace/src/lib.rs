@@ -14,6 +14,8 @@ mod benchmarking;
 pub mod weights;
 pub use weights::*;
 
+use pallet_assets::{Instance1, Instance2};
+
 use frame_support::{
 	traits::{Currency, Incrementable, ReservableCurrency},
 	PalletId,
@@ -35,7 +37,7 @@ use parity_scale_codec::Codec;
 
 type AccountIdOf<T> = <T as frame_system::Config>::AccountId;
 
-type AssetBalanceOf<T> = <T as pallet_assets::Config>::Balance;
+type AssetBalanceOf<T> = <T as pallet_assets::Config<pallet_assets::Instance1>>::Balance;
 
 type FrationalizedNftBalanceOf<T> = <T as pallet_nft_fractionalization::Config>::AssetBalance;
 
@@ -205,7 +207,8 @@ pub mod pallet {
 		frame_system::Config
 		+ pallet_nfts::Config
 		+ pallet_xcavate_whitelist::Config
-		+ pallet_assets::Config
+		+ pallet_assets::Config<Instance1>
+		+ pallet_assets::Config<Instance2>
 		+ pallet_nft_fractionalization::Config
 	{
 		/// Because this pallet emits events, it depends on the runtime's definition of an event.
@@ -223,7 +226,7 @@ pub mod pallet {
 
 		#[cfg(feature = "runtime-benchmarks")]
 		type Helper: crate::BenchmarkHelper<
-			<Self as pallet_assets::Config>::AssetId,
+			<Self as pallet_assets::Config<Instance1>>::AssetId,
 			Self,
 		>;
 
@@ -279,7 +282,13 @@ pub mod pallet {
 			+ Copy;
 
 		/// Asset id type from pallet assets.
-		type AssetId2: IsType<<Self as pallet_assets::Config>::AssetId>
+		type AssetId2: IsType<<Self as pallet_assets::Config<Instance1>>::AssetId>
+			+ Parameter
+			+ From<u32>
+			+ Ord
+			+ Copy;
+		
+		type AssetId3: IsType<<Self as pallet_assets::Config<Instance2>>::AssetId>
 			+ Parameter
 			+ From<u32>
 			+ Ord
@@ -300,6 +309,7 @@ pub mod pallet {
 
 	pub type FractionalizedAssetId<T> = <T as Config>::AssetId;
 	pub type AssetId<T> = <T as Config>::AssetId2;
+	pub type ForeignAssetId<T> = <T as Config>::AssetId3;
 	pub type CollectionId<T> = <T as Config>::CollectionId;
 	pub type ItemId<T> = <T as Config>::ItemId;
 	pub type FractionalizeCollectionId<T> = <T as Config>::FractionalizeCollectionId;
@@ -675,7 +685,7 @@ pub mod pallet {
 			let mut next_item_id = NextNftId::<T>::get(collection_id);
 			let mut asset_number: u32 = NextAssetId::<T>::get();
 			let mut asset_id: AssetId<T> = asset_number.into();
-			while pallet_assets::Pallet::<T>::maybe_total_supply(asset_id.into())
+			while pallet_assets::Pallet::<T, Instance1>::maybe_total_supply(asset_id.into())
 				.is_some()
 			{
 				asset_number = asset_number.checked_add(1).ok_or(Error::<T>::ArithmeticOverflow)?;
@@ -911,7 +921,7 @@ pub mod pallet {
 			let pallet_lookup = <T::Lookup as StaticLookup>::unlookup(Self::account_id());
 			let asset_id: AssetId<T> = nft_details.asset_id.into();
 			let token_amount = amount.into();
-			pallet_assets::Pallet::<T>::transfer(
+			pallet_assets::Pallet::<T, Instance1>::transfer(
 				origin,
 				asset_id.into().into(),
 				pallet_lookup,
@@ -1182,7 +1192,7 @@ pub mod pallet {
 			let asset_id: AssetId<T> = listing_details.asset_id.into();
 			let token_amount = listing_details.amount.into();
 			let pallet_origin: OriginFor<T> = RawOrigin::Signed(Self::account_id()).into();
-			pallet_assets::Pallet::<T>::transfer(
+			pallet_assets::Pallet::<T, Instance1>::transfer(
 				pallet_origin,
 				asset_id.into().into(),
 				user_lookup,
@@ -1445,7 +1455,7 @@ pub mod pallet {
 				let token_details: TokenOwnerDetails<AssetBalanceOf<T>> = TokenOwner::<T>::take(owner.clone(), listing_id);
 				//let token: u64 = TokenOwner::<T>::take(owner.clone(), listing_id) as u64;
 				let token_amount = token_details.token_amount.try_into().map_err(|_| Error::<T>::ConversionError)?;
-				pallet_assets::Pallet::<T>::transfer(
+				pallet_assets::Pallet::<T, Instance1>::transfer(
 					origin.clone(),
 					asset_id.into().into(),
 					user_lookup,
@@ -1542,7 +1552,7 @@ pub mod pallet {
 			let asset_id: AssetId<T> = listing_details.asset_id.into();
 			let token_amount = amount.into();
 			let pallet_origin: OriginFor<T> = RawOrigin::Signed(Self::account_id()).into();
-			pallet_assets::Pallet::<T>::transfer(
+			pallet_assets::Pallet::<T, Instance1>::transfer(
 				pallet_origin,
 				asset_id.into().into(),
 				user_lookup,
@@ -1666,9 +1676,9 @@ pub mod pallet {
 				TryInto::<u32>::try_into(amount).map_err(|_| Error::<T>::ConversionError)?;
 			let origin: OriginFor<T> = RawOrigin::Signed(from).into();
 			let account_lookup = <T::Lookup as StaticLookup>::unlookup(to);
-			let asset_id: AssetId<T> = 1.into();
+			let asset_id: ForeignAssetId<T> = 1.into();
 			let token_amount = u32_amunt.into();
-			Ok(pallet_assets::Pallet::<T>::transfer(
+			Ok(pallet_assets::Pallet::<T, Instance2>::transfer(
 				origin,
 				asset_id.into().into(),
 				account_lookup,
