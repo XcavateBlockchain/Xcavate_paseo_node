@@ -154,12 +154,14 @@ construct_runtime!(
         Nfts: pallet_nfts = 40,
         NftFractionalization: pallet_nft_fractionalization = 41,
         Vesting: pallet_vesting = 42,
+        RandomnessCollectiveFlip: pallet_insecure_randomness_collective_flip = 43,
 
         // Custom
         XcavateWhitelist: pallet_xcavate_whitelist = 50,
         NftMarketplace: pallet_nft_marketplace = 51,
         PropertyManagement: pallet_property_management = 52,
 		PropertyGovernance: pallet_property_governance = 53,
+        GameModule: pallet_game = 54,
     }
 );
 

@@ -46,6 +46,7 @@ pallet-utility = { workspace = true }
 pallet-whitelist = { workspace = true }
 pallet-nfts = { workspace = true }
 pallet-nft-fractionalization = { workspace = true }
+pallet-insecure-randomness-collective-flip = { workspace = true }
 pallet-vesting = { workspace = true }
 sp-api = { workspace = true }
 sp-arithmetic = { workspace = true }
@@ -91,6 +92,7 @@ pallet-xcavate-whitelist = { workspace = true }
 pallet-nft-marketplace = { workspace = true }
 pallet-property-management = { workspace = true }
 pallet-property-governance = { workspace = true }
+pallet-game = { workspace = true }
 
 [dev-dependencies]
 sp-io = { workspace = true }
@@ -141,10 +143,12 @@ std = [
 	"pallet-nfts/std",
 	"pallet-nft-fractionalization/std",
 	"pallet-vesting/std",
+	"pallet-insecure-randomness-collective-flip/std",
 	"pallet-xcavate-whitelist/std",
 	"pallet-nft-marketplace/std",
 	"pallet-property-management/std",
 	"pallet-property-governance/std",
+	"pallet-game/std",
 	"pallet-xcm/std",
 	"parachain-info/std",
 	"parachains-common/std",
@@ -240,11 +244,13 @@ try-runtime = [
 	"pallet-whitelist/try-runtime",
 	"pallet-nfts/try-runtime",
 	"pallet-nft-fractionalization/try-runtime",
+	"pallet-insecure-randomness-collective-flip/try-runtime",
 	"pallet-vesting/try-runtime",
 	"pallet-xcavate-whitelist/try-runtime",
 	"pallet-nft-marketplace/try-runtime",
 	"pallet-property-management/try-runtime",
 	"pallet-property-governance/try-runtime",
+	"pallet-game/try-runtime",
 	"pallet-xcm/try-runtime",
 	"parachain-info/try-runtime",
 	"polkadot-runtime-common/try-runtime",

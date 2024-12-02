@@ -59,6 +59,7 @@ use crate::{
     Aura, LocalAssets, Balances, CollatorSelection, MessageQueue, OriginCaller, PalletInfo, ParachainSystem,
     Preimage, Runtime, RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason,
     RuntimeOrigin, RuntimeTask, Session, SessionKeys, System, Treasury, WeightToFee, XcmpQueue, Nfts,
+    RandomnessCollectiveFlip,
 };
 use pallet_nfts::PalletFeatures;
 
@@ -724,6 +725,8 @@ impl pallet_vesting::Config for Runtime {
 	type BlockNumberProvider = System;
 } 
 
+impl pallet_insecure_randomness_collective_flip::Config for Runtime {}
+
 parameter_types! {
 	pub const MaxWhitelistUsers: u32 = 1000;
 }
@@ -824,4 +827,40 @@ impl pallet_property_governance::Config for Runtime {
 	type PalletId = PropertyGovernancePalletId;
 	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
 	type PolkadotJsMultiplier = PolkadotJsMultiply;
+} 
+
+#[derive(Debug, Clone, Copy, Eq, PartialEq)]
+pub struct MaxProperties;
+
+impl sp_core::Get<u32> for MaxProperties {
+	fn get() -> u32 {
+		100
+	}
+}
+
+parameter_types! {
+	pub const GamePalletId: PalletId = PalletId(*b"py/rlxdl");
+	pub const MaxOngoingGame: u32 = 200;
+	pub const LeaderLimit: u32 = 10;
+	pub const MaxAdmin: u32 = 10;
+	pub const RequestLimits: BlockNumber = 100800;
+	pub const GameStringLimit: u32 = 500;
+}
+
+/// Configure the pallet-game in pallets/game.
+impl pallet_game::Config for Runtime {
+	type RuntimeEvent = RuntimeEvent;
+	type Currency = Balances;
+	type WeightInfo = pallet_game::weights::SubstrateWeight<Runtime>;
+	type GameOrigin = EnsureRoot<Self::AccountId>;
+	type CollectionId = u32;
+	type ItemId = u32;
+	type MaxProperty = MaxProperties;
+	type PalletId = GamePalletId;
+	type MaxOngoingGames = MaxOngoingGame;
+	type GameRandomness = RandomnessCollectiveFlip;
+	type StringLimit = GameStringLimit;
+	type LeaderboardLimit = LeaderLimit;
+	type MaxAdmins = MaxAdmin;
+	type RequestLimit = RequestLimits;
 } 
