@@ -451,7 +451,7 @@ fn set_letting_agent_fails() {
 			Balances::make_free_balance_be(&[x; 32].into(), 100_000);
 			assert_ok!(ForeignAssets::mint(
 				RuntimeOrigin::signed([0; 32].into()),
-				1.into(),
+				1984.into(),
 				sp_runtime::MultiAddress::Id([(x + 1); 32].into()),
 				1_000_000,
 			));

@@ -1676,7 +1676,7 @@ pub mod pallet {
 				TryInto::<u32>::try_into(amount).map_err(|_| Error::<T>::ConversionError)?;
 			let origin: OriginFor<T> = RawOrigin::Signed(from).into();
 			let account_lookup = <T::Lookup as StaticLookup>::unlookup(to);
-			let asset_id: ForeignAssetId<T> = 1.into();
+			let asset_id: ForeignAssetId<T> = 1984.into();
 			let token_amount = u32_amunt.into();
 			Ok(pallet_assets::Pallet::<T, Instance2>::transfer(
 				origin,
