@@ -56,7 +56,7 @@ use crate::{
         PriceForSiblingParachainDelivery, TreasuryPaymaster,
     },
     weights::{self, BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight},
-    Aura, LocalAssets, Balances, CollatorSelection, MessageQueue, OriginCaller, PalletInfo, ParachainSystem,
+    Aura, Assets, Balances, CollatorSelection, MessageQueue, OriginCaller, PalletInfo, ParachainSystem,
     Preimage, Runtime, RuntimeCall, RuntimeEvent, RuntimeFreezeReason, RuntimeHoldReason,
     RuntimeOrigin, RuntimeTask, Session, SessionKeys, System, Treasury, WeightToFee, XcmpQueue, Nfts,
     RandomnessCollectiveFlip,
@@ -698,7 +698,7 @@ impl pallet_nft_fractionalization::Config for Runtime {
 	type NftId = <Self as pallet_nfts::Config>::ItemId;
 	type AssetBalance = <Self as pallet_balances::Config>::Balance;
 	type AssetId = <Self as pallet_assets::Config<LocalAssetInstance>>::AssetId;
-	type Assets = LocalAssets;
+	type Assets = Assets;
 	type Nfts = Nfts;
 	type PalletId = NftFractionalizationPalletId;
 	type WeightInfo = ();
