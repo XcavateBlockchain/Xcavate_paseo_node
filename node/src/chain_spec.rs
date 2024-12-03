@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 use sp_core::{sr25519, Pair, Public};
 use sp_runtime::traits::{IdentifyAccount, Verify};
 
+const PARA_ID: u32 = 4003;
+
 /// Specialized `ChainSpec` for the normal parachain runtime.
 pub type ChainSpec =
     sc_service::GenericChainSpec<generic_runtime_template::RuntimeGenesisConfig, Extensions>;
@@ -66,9 +68,9 @@ pub fn template_session_keys(keys: AuraId) -> generic_runtime_template::SessionK
 }
 
 pub fn development_config() -> ChainSpec {
-    // Give your base currency a unit name and decimal places
+    // Give your base currency a XCAV name and decimal places
     let mut properties = sc_chain_spec::Properties::new();
-    properties.insert("tokenSymbol".into(), "UNIT".into());
+    properties.insert("tokenSymbol".into(), "XCAV".into());
     properties.insert("tokenDecimals".into(), 12.into());
     properties.insert("ss58Format".into(), 42.into());
     // This is very important for us, it lets us track the usage of our templates, and have no downside for the node/runtime. Please do not remove :)
@@ -77,9 +79,9 @@ pub fn development_config() -> ChainSpec {
     ChainSpec::builder(
         generic_runtime_template::WASM_BINARY.expect("WASM binary was not built, please build it!"),
         Extensions {
-            relay_chain: "rococo-local".into(),
+            relay_chain: "paseo".into(),
             // You MUST set this to the correct network!
-            para_id: 1000,
+            para_id: PARA_ID,
         },
     )
     .with_name("Development")
@@ -112,15 +114,15 @@ pub fn development_config() -> ChainSpec {
             get_account_id_from_seed::<sr25519::Public>("Ferdie//stash"),
         ],
         get_account_id_from_seed::<sr25519::Public>("Alice"),
-        1000.into(),
+        PARA_ID.into(),
     ))
     .build()
 }
 
 pub fn local_testnet_config() -> ChainSpec {
-    // Give your base currency a unit name and decimal places
+    // Give your base currency a XCAV name and decimal places
     let mut properties = sc_chain_spec::Properties::new();
-    properties.insert("tokenSymbol".into(), "UNIT".into());
+    properties.insert("tokenSymbol".into(), "XCAV".into());
     properties.insert("tokenDecimals".into(), 12.into());
     properties.insert("ss58Format".into(), 42.into());
 
@@ -128,9 +130,9 @@ pub fn local_testnet_config() -> ChainSpec {
     ChainSpec::builder(
         generic_runtime_template::WASM_BINARY.expect("WASM binary was not built, please build it!"),
         Extensions {
-            relay_chain: "rococo-local".into(),
+            relay_chain: "paseo".into(),
             // You MUST set this to the correct network!
-            para_id: 1000,
+            para_id: PARA_ID,
         },
     )
     .with_name("Local Testnet")

@@ -1,0 +1,39 @@
+for node02
+ganesholi@Ganeshs-MacBook-Air xcav-dip-kilt % ./target/release/generic-template-node key generate --scheme Sr25519 --password-interactive
+Key password: 
+Secret phrase:       tourist recipe bar advance debate noodle cream giant genius father spike pave
+  Network ID:        substrate
+  Secret seed:       0xb4643d3a0b22430734e0340deb92ef199fa0984aae282d0191909cea62f56763
+  Public key (hex):  0x5c99add57e254b0ff7eeb578e9caf1996ab8708d44b8396040ab4555befb7657
+  Account ID:        0x5c99add57e254b0ff7eeb578e9caf1996ab8708d44b8396040ab4555befb7657
+  Public key (SS58): 5EA7v1WzPVsLYpiGDW7ReT3QBiCfFjZs4yW9xBTJkyQHR4uZ
+  SS58 Address:      5EA7v1WzPVsLYpiGDW7ReT3QBiCfFjZs4yW9xBTJkyQHR4uZ
+ganesholi@Ganeshs-MacBook-Air xcav-dip-kilt % 
+
+
+// insert in the node02
+./target/release/generic-template-node key insert --base-path ./tmp/node02 \
+  --chain raw-parachain-chainspec.json \
+  --scheme Sr25519 \
+  --suri "scorpion lyrics coffee bone broom quit noble rural simple tongue select cool" \
+  --password-interactive \
+  --key-type aura
+
+// aura key for node01
+ganesholi@Ganeshs-MacBook-Air xcav-dip-kilt % ./target/release/generic-template-node key generate --scheme Sr25519 --password-interactive
+Key password: 
+Secret phrase:       spell witness umbrella frost twice number coil suggest swap road brain frequent
+  Network ID:        substrate
+  Secret seed:       0xe5b261ee0763e2649bb3f3ae3de71bc00ac2651a7c79d08e9dbd008ece3cad4d
+  Public key (hex):  0x926b78cfcfef91173f23a85db6569a7cf031da69a4aa2db08e1dbbebc108212a
+  Account ID:        0x926b78cfcfef91173f23a85db6569a7cf031da69a4aa2db08e1dbbebc108212a
+  Public key (SS58): 5FNgmrWraMReZFn9Z8BCBzi3vVtTaKEfjpoqrNumeVka1L3t
+  SS58 Address:      5FNgmrWraMReZFn9Z8BCBzi3vVtTaKEfjpoqrNumeVka1L3t
+ganesholi@Ganeshs-MacBook-Air xcav-dip-kilt % 
+
+ganesholi@Ganeshs-MacBook-Air xcavate-on-kilt-dip-consumer % ./target/release/generic-template-node key insert --base-path ./tmp/node01 \
+  --chain raw-parachain-chainspec.json \
+  --scheme Sr25519 \
+  --suri "raise abuse force leader later clap wet combine dwarf best salon clever" \
+  --password-interactive \
+  --key-type aura
